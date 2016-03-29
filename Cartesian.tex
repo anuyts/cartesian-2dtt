@@ -40,7 +40,7 @@
   ${\G} \to \C$, we also write $S$ when $c$ is of category $\types$.  
 
 \item \oftp{\G}{t}{S} where
-  \ofdtp{\Gamma}{S}{\types} means $t$ is an element of $\varprojlim S$.
+  \ofdtp{\Gamma}{S}{\types} means $t$ is an element of $\varprojlim S$, or equivalently a section of $\pi_1 : \int_\Gamma^+ T \to \Gamma$.
 
 \end{itemize}
 
@@ -163,6 +163,15 @@ w ::= \coc \mid \conc \\
 \end{array}
 \]
 
+\subsection{Semantics}
+Context extensions are interpreted as follows:
+\begin{itemize}
+	\item $\paren{\Gamma, \catvar x \co \C} \mapsto \Gamma \times \C$,
+	\item $\paren{\Gamma, \catvar x \con \C} \mapsto \Gamma \times \op\C$,
+	\item $\paren{\Gamma, \catvar u \coc T} \mapsto \int_\Gamma^+ T$,
+	\item $\paren{\Gamma, \catvar u \conc T} \mapsto \int_\Gamma^- T$.
+\end{itemize}
+
 \section{Types}
 
 \subsection{Universe}
@@ -196,21 +205,22 @@ functions).
 
 \subsection{Dagger Types}
 
-\[
-\begin{array}{c}
-\infer{\wftp{\Gamma}{\dagtp{T}}}
-      {\wftp{\Gamma^\con}{T}}
-\qquad
-\infer{\oftp{\Gamma}{\dagtm{t}}{\dagtp{T}}}
-      {\oftp{\Gamma^\con}{t}{T}}
-\qquad
-\infer{\oftp{\Gamma}{\undag{t}}{{T}}}
-      {\oftp{\Gamma^\con}{t}{\dagtp{T}}}
-\\ \\
-\undag{\dagtm{t}} \deq t \\
-\dagtm{\undag{t}} \deq t
-\end{array}
-\]
+We don't want to distinguish between sets and types. Dagger sets are not justifiable semantically and therefore should not exist.
+%\[
+%\begin{array}{c}
+%\infer{\wftp{\Gamma}{\dagtp{T}}}
+%      {\wftp{\Gamma^\con}{T}}
+%\qquad
+%\infer{\oftp{\Gamma}{\dagtm{t}}{\dagtp{T}}}
+%      {\oftp{\Gamma^\con}{t}{T}}
+%\qquad
+%\infer{\oftp{\Gamma}{\undag{t}}{{T}}}
+%      {\oftp{\Gamma^\con}{t}{\dagtp{T}}}
+%\\ \\
+%\undag{\dagtm{t}} \deq t \\
+%\dagtm{\undag{t}} \deq t
+%\end{array}
+%\]
 
 \subsection{Hom Types}
 \[
@@ -225,6 +235,15 @@ functions).
 %      {\oftpe{\dupctx{\Gamma}{\vcond}}{c}{\vcond}{\C} 
 %      }
 \end{array}
+\]
+
+The introduction rule is trivial/non-existent. Or do we need something like this:
+\[
+	\infer{
+		\oftp{\cdot}{\idm c}{\Hom{\C}{c}{c}}
+	}{
+		\oftp{\cdot}{c}{\C}
+	}
 \]
 
 %% \infer{\oftpsf{\Delta}{\Gamma}{\morind{x_0,x_1,x.A}{M}{y.N}}{\subst{\subst{\subst{A}{M_0}{x_0}}{M_1}{x_1}}{M}{x}}}
@@ -266,13 +285,22 @@ Source-based elimination, too, is just substitution (although here I'm not 100\%
 	\end{array} }
 \end{equation}
 \FIXME{contravariant derivable?}
-
-\todoi{What is below, is copied from earlier version and NOT updated.}
-
+Or do we need something like this:
+\begin{equation}
+	\infer[\admiss]{
+		\oftp{\cdot}{\ldots}{S[c/x, \vfi/\xi]}
+	}{ \begin{array}{l}
+		\wfdtp{\C} \\
+		\oftp{\cdot}{c', c}{\C} \\
+		\oftp{\cdot}{\vfi}{\Hom{\C}{c'}{c}} \\
+		\oftp{\catvar{x}{\co}{\C}, \tpvar{\xi}{\coc}{\Hom{\C}{c'}{x}} }{S}{\types} \\
+		\oftp{\cdot}{t}{S[c'/x, \idm{c'}/\xi]}
+	\end{array} }
+\end{equation}
 
 \subsection{$\Pi$-like Things}
 
-\subsection{Functor Categories}
+\subsubsection{Functor Categories}
 
 \[
 \begin{array}{c}
@@ -296,81 +324,147 @@ Source-based elimination, too, is just substitution (although here I'm not 100\%
 \end{array} \\
 \]
 
-\subsubsection{Dependent}
-
-\textbf{Allows dependency of $S_2$ on $S_1$, but whole type must be
-  covariant functor, not bifunctor, in intro and elim.}
-
-\[
-\infer{\oftp{\Gamma}{\piset{x}{S_1}{S_2}}{\types}}
-      {\oftp{\Gamma^\con}{S_1}{\types} &
-        \oftp{\Gamma, \tpvar {x}{\vcond}{S_1^\vcond}}{S_2}{\types}}
-\]
-Note that only the starred variables occur in $S_1^\vcond$ in the
-context, not any unstarred variables.  
-
-\[
-\begin{array}{c}
-\infer{\oftpe{\Gamma}{\ulam{x}{t}}{\bullet}{\piset x {S_1} {S_2}}}
-      { \ofdtp{\Gamma}{\piset{x}{S_1}{S_2}}{\types} & 
-        & \oftpe{\Gamma, \tpvar x {\vcond} {S_1^\vcond} }{t}{\bullet}{S_2}}
-\qquad
-\infer{\oftpe{\Gamma}{\app t {t'}}{\bullet}{\tsubst {S_2} {{t'}/ x}}}
-      {\oftpe{\Gamma}{t}{\bullet}{\piset{x}{S_1}{S_2}} &
-        \oftpe{\Gamma}{t'}{\vcond}{S_1^\vcond}}
-\end{array}
-\]
-Note that these rules only apply when the type is well-formed in
-$\Gamma$, not with the secret context, which we notate by writing
-$\bullet$ for a fresh variable constructor variable that doesn't occur
-anywhere.
+\subsubsection{Covariant $\Pi$ (Presheaf $\Pi$)}
+\begin{equation}
+	\infer{
+		\oftp{\Gamma}{\pico{x}{S}{T}}{\types}
+	}{
+		\oftp{\Gamma}{S}{\types} &
+		\oftp{\Gamma, \tpvar x \coc S}{T}{\types}
+	}
+\end{equation}
+\begin{equation}
+	\infer{
+		\oftp{\Gamma}{\laco x S t}{\pico{x}{S}{T}}
+	}{
+		\oftp{\Gamma, \tpvar x \coc S}{t}{T}
+	}
+	\qquad
+	\infer{
+		\oftp{\Gamma}{f s}{T[s/x]}
+	}{
+		\oftp{\Gamma}{f}{\pico{x}{S}{T}} &
+		\oftp{\Gamma}{s}{S}
+	}
+\end{equation}
 
 \[
 \begin{array}{rcll}
-\app {(\ulam{x}{t})}{t'} & \equiv & \subst{t}{t'}{x} \\
-\tpvar{t}{\bullet}{\piset{x}{S_1}{S_2}} & \equiv & {(\ulam{x}{t}{x})} &
+\app {\laco x S t}{s} & \equiv & \subst{t}{s}{x} \\
+\tpvar{f}{}{\pico{x}{S}{T}} & \equiv & \laco x S{fx} &
 \end{array} \\
 \]
 
-\subsubsection{Non-dependent functions between sets}
+The semantics of the presheaf $\Pi$ explicitly depend on the context, which makes the semantics of weakening/exchange/substitution a bit obscure.
 
-\textbf{Works for a bifunctor, but no dependency of $S_2$ on $S_1$.}
-
-\[
-\infer{\oftp{\Gamma}{\arr{S_1}{S_2}}{\types}}
-      {\oftp{\Gamma^\con}{S_1}{\types} &
-        \oftp{\Gamma}{S_2}{\types}}
-\]
-Note that the starred variables are not free in $S_1$ because we wrote
-$\Gamma^\con$ not $\dupctx{\Gamma^\con}{\vcond}$ in the premise, so $S_1$ is
-weakened in the context extension.  This is because we want to take the
-$\Pi$ of an opfibration and a fibration, not a bifibration and a
-fibration, or something?  Semantically, the context extension will mean
-the co/contravariant category of elements instead of the end.  
-
-\[
-\begin{array}{c}
-\infer{\oftpe{\Gamma}{\ulam{x}{t}}{\vcond}{\arr {S_1} {S_2}}}
-      {\oftpe{\Gamma, \tpvar x {\vcond} {S_1^\vcond} }{t}{\vcond}{S_2}}
-\qquad
-\infer{\oftpe{\Gamma}{\app t {t'}}{\vcond}{{S_2}}}
-      {\oftpe{\Gamma}{t}{\vcond}{\arr{S_1}{S_2}} &
-        \oftpe{\Gamma}{t'}{\vcond}{S_1^\vcond}}
-\end{array}
-\]
-Note that these rules only apply when the type is well-formed in
-$\Gamma$, not with the secret context, which we notate by writing
-$\bullet$ for a fresh variable constructor variable that doesn't occur
-anywhere.
+\subsubsection{Contravariant $\Pi$ (Ordinary $\Pi$)}
+\begin{equation}
+	\infer{
+		\oftp{\Gamma}{\picon{x}{S}{T}}{\types}
+	}{
+		\oftp{\Gamma^\con}{S}{\types} &
+		\oftp{\Gamma, \tpvar x \conc S}{T}{\types}
+	}
+\end{equation}
+\begin{equation}
+	\infer{
+		\oftp{\Gamma}{\lacon x S t}{\picon{x}{S}{T}}
+	}{
+		\oftp{\Gamma, \tpvar x \conc S}{t}{T}
+	}
+	\qquad
+	\infer{
+		\oftp{\Gamma}{f s}{T[s/x]}
+	}{
+		\oftp{\Gamma}{f}{\picon{x}{S}{T}} &
+		\oftp{\Gamma^\con}{s}{S}
+	}
+\end{equation}
 
 \[
 \begin{array}{rcll}
-\app {(\ulam{x}{t})}{t'} & \equiv & \subst{t}{t'}{x} \\
-\tptm{t}{\arr{S_1}{S_2}} & \equiv & {(\ulam{x}{t}{x})} &
+\app {\lacon x S t}{s} & \equiv & \subst{t}{s}{x} \\
+\tpvar{f}{}{\picon{x}{S}{T}} & \equiv & \lacon x S{fx} &
 \end{array} \\
 \]
 
-\subsubsection{$\Pi$ of a category and a set (End)}
+%\subsubsection{Dependent}
+%
+%
+%\textbf{Allows dependency of $S_2$ on $S_1$, but whole type must be
+%  covariant functor, not bifunctor, in intro and elim.}
+%
+%\[
+%\infer{\oftp{\Gamma}{\piset{x}{S_1}{S_2}}{\types}}
+%      {\oftp{\Gamma^\con}{S_1}{\types} &
+%        \oftp{\Gamma, \tpvar {x}{\vcond}{S_1^\vcond}}{S_2}{\types}}
+%\]
+%Note that only the starred variables occur in $S_1^\vcond$ in the
+%context, not any unstarred variables.  
+%
+%\[
+%\begin{array}{c}
+%\infer{\oftpe{\Gamma}{\ulam{x}{t}}{\bullet}{\piset x {S_1} {S_2}}}
+%      { \ofdtp{\Gamma}{\piset{x}{S_1}{S_2}}{\types} & 
+%        & \oftpe{\Gamma, \tpvar x {\vcond} {S_1^\vcond} }{t}{\bullet}{S_2}}
+%\qquad
+%\infer{\oftpe{\Gamma}{\app t {t'}}{\bullet}{\tsubst {S_2} {{t'}/ x}}}
+%      {\oftpe{\Gamma}{t}{\bullet}{\piset{x}{S_1}{S_2}} &
+%        \oftpe{\Gamma}{t'}{\vcond}{S_1^\vcond}}
+%\end{array}
+%\]
+%Note that these rules only apply when the type is well-formed in
+%$\Gamma$, not with the secret context, which we notate by writing
+%$\bullet$ for a fresh variable constructor variable that doesn't occur
+%anywhere.
+%
+%\[
+%\begin{array}{rcll}
+%\app {(\ulam{x}{t})}{t'} & \equiv & \subst{t}{t'}{x} \\
+%\tpvar{t}{\bullet}{\piset{x}{S_1}{S_2}} & \equiv & {(\ulam{x}{t}{x})} &
+%\end{array} \\
+%\]
+%
+%\subsubsection{Non-dependent functions between sets}
+%
+%\textbf{Works for a bifunctor, but no dependency of $S_2$ on $S_1$.}
+%
+%\[
+%\infer{\oftp{\Gamma}{\arr{S_1}{S_2}}{\types}}
+%      {\oftp{\Gamma^\con}{S_1}{\types} &
+%        \oftp{\Gamma}{S_2}{\types}}
+%\]
+%Note that the starred variables are not free in $S_1$ because we wrote
+%$\Gamma^\con$ not $\dupctx{\Gamma^\con}{\vcond}$ in the premise, so $S_1$ is
+%weakened in the context extension.  This is because we want to take the
+%$\Pi$ of an opfibration and a fibration, not a bifibration and a
+%fibration, or something?  Semantically, the context extension will mean
+%the co/contravariant category of elements instead of the end.  
+%
+%\[
+%\begin{array}{c}
+%\infer{\oftpe{\Gamma}{\ulam{x}{t}}{\vcond}{\arr {S_1} {S_2}}}
+%      {\oftpe{\Gamma, \tpvar x {\vcond} {S_1^\vcond} }{t}{\vcond}{S_2}}
+%\qquad
+%\infer{\oftpe{\Gamma}{\app t {t'}}{\vcond}{{S_2}}}
+%      {\oftpe{\Gamma}{t}{\vcond}{\arr{S_1}{S_2}} &
+%        \oftpe{\Gamma}{t'}{\vcond}{S_1^\vcond}}
+%\end{array}
+%\]
+%Note that these rules only apply when the type is well-formed in
+%$\Gamma$, not with the secret context, which we notate by writing
+%$\bullet$ for a fresh variable constructor variable that doesn't occur
+%anywhere.
+%
+%\[
+%\begin{array}{rcll}
+%\app {(\ulam{x}{t})}{t'} & \equiv & \subst{t}{t'}{x} \\
+%\tptm{t}{\arr{S_1}{S_2}} & \equiv & {(\ulam{x}{t}{x})} &
+%\end{array} \\
+%\]
+
+\subsubsection{$\Pi$ of a category and a set (Limit)}
+\todoi{What is below, is copied from an earlier version and NOT updated.}
 
 \[
 \begin{array}{c}
