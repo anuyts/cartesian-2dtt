@@ -701,6 +701,34 @@ A section of the covariant or contravariant Grothendieck construction (category 
 %\end{array}
 %\]
 
+\subsection{Identity types}
+\[
+	\infer{
+		\ofdtp{\Gamma}{\idtp A a b}{\types}
+	}{
+		%\ofdtp{\Gamma}{A}{\types} &
+		\oftp{\Gamma}{a, b}{A}
+	}
+	\qquad
+	\infer{
+		\oftp{\Gamma}{\refl\,a}{\idtp A a a}
+	}{
+		\oftp{\Gamma}{a}{A}
+	}
+	\qquad
+	\infer{
+		\oftp{\Gamma}{\ldots}{S[a/x,b/y,q/p]}
+	}{
+		\begin{array}{l}
+			\ofdtp{\Gamma}{A}{\types} \\
+			\ofdtp{\Gamma, \tpvar{x}{\coc}{A}, \tpvar{y}{\coc}{A}, \tpvar{p}{\coc}{\idtp A x y}}{S}{\types} \\
+			\oftp{\Gamma}{a, b}{A} \\
+			\oftp{\Gamma}{s}{S[a/x, a/y, \refl\,a/p]} \\
+			\oftp{\Gamma}{q}{\idtp A a b}
+		\end{array}
+	}
+\]
+
 \todoi{What is below, is copied from an earlier version and NOT updated.}
 \subsection{Bool}
 
