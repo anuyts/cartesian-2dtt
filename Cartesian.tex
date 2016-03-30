@@ -344,6 +344,10 @@ We could also consider a covariant (presheaf) Hom:
 		\oftp{\Gamma}{c_1}{\C} 
 	}
 \]
+Semantically, $\Hombind{\C}{\coc}{c_0}{c_1}$ maps $\gamma \in \Gamma$ to the set of natural elements of
+\[
+	\forall (\gamma'' \in \Gamma). \forall (\phi : \gamma \to \gamma'').\Hom{\C}{c_0(\gamma'')}{c_1(\gamma'')}.
+\]
 This one doesn't interact well with boxed variables, but it admits a simple introduction rule:
 \[
 	\infer{
