@@ -222,6 +222,20 @@ We don't want to distinguish between sets and types. Dagger sets are not justifi
 %\end{array}
 %\]
 
+We can have presheaf dagger types! We would have
+\begin{equation}
+	{A^\dag(x)} = \forall(y, \vfi : x \to y).A(y) \,\text{naturally}.
+\end{equation}
+Then we get
+\begin{align*}
+	{A^{\dag \dag}(x)}
+	&= \forall(y, \vfi : x \to y).A^\dag(y) \,\text{naturally} \\
+	&= \forall(y, \vfi : x \to y, z, \psi : y \to z).A(z) \,\text{naturally} \\
+	&\simeq \forall(y, \vfi : x \to y).A(y) \,\text{naturally} \\
+	&\simeq A(x),
+\end{align*}
+twice using the Yoneda lemma. Including these in the theory seems as acceptible as including presheaf $\Pi$s.
+
 \subsection{Hom Types}
 \[
 \begin{array}{c}
@@ -629,68 +643,65 @@ A section of the covariant or contravariant Grothendieck construction (category 
 \end{array}
 \]
 
-\subsection{$\Sigma$ of sets}
+\subsubsection{$\Sigma$ of sets}
+
+\[
+\begin{array}{c}
+\infer{\ofdtp{\Gamma}{\sigmaset{x}{S}{T}}{\types}}
+      {\ofdtp{\Gamma}{S}{\types} &
+        \ofdtp{\Gamma, \tpvar{x}{\coc}{S}}{T}{\types}}
+\qquad
+\infer{\oftp{\Gamma}{\pair{s}{t}}{\sigmaset x {S} {T}}}
+      {\ofdtp{\Gamma}{S}{\types} &
+        \ofdtp{\Gamma, \tpvar{x}{\coc}{S}}{T}{\types} &
+        \oftp{\Gamma}{s}{S} &
+        \oftp{\Gamma}{t}{\subst{T}{s}{x}}}
+\\ \\
+\infer{\oftp{\Gamma}{\fst t}{S}}
+      {\oftp{\Gamma}{t}{\sigmaset{x}{S}{T}}}
+\qquad
+\infer{\oftp{\Gamma}{\snd t}{\subst{T}{\fst t}{x}}}
+      {\oftp{\Gamma}{t}{\sigmaset{x}{S}{T}}}
+\end{array}
+\]
+
+\[
+\begin{array}{rcll}
+\fst{\pair{s}{t}} & \deq & s \\
+\snd{\pair{s}{t}} & \deq & t \\
+\tpvar{t}{}{\sigmaset{x}{S_1}{S_2}} & \deq & \pair{\fst t}{\snd t}
+\end{array}
+\]
+
+%\subsubsection{Non-dependent product of sets}
+%
+%\[
+%\begin{array}{c}
+%\infer{\ofdtp{\Gamma}{\prd{S_1}{S_1}}{\types}}
+%      {\ofdtp{\Gamma}{S_1}{\types} &
+%        \ofdtp{\Gamma}{S_2}{\types}}
+%\qquad
+%\infer{\oftpe{\Gamma}{\pair{t_1}{t_2}}{\vcond}{\prd {S_1} {S_2}}}
+%      { \oftpe{\Gamma}{t_1}{\vcond}{S_1} &
+%        \oftpe{\Gamma}{t_2}{\vcond}{S_2}}
+%\\ \\
+%\infer{\oftpe{\Gamma}{\fst t}{\vcond}{{S_1}}}
+%      {\oftpe{\Gamma}{t}{\vcond}{\prd{S_1}{S_2}}}
+%\qquad
+%\infer{\oftpe{\Gamma}{\snd t}{\vcond}{{S_2}}}
+%      {\oftpe{\Gamma}{t}{\vcond}{\prd{S_1}{S_2}}}
+%\end{array}
+%\]
+%
+%\[
+%\begin{array}{rcll}
+%\fst{\pair{s}{t}} & \deq & s \\
+%\snd{\pair{s}{t}} & \deq & t \\
+%\tptm{t}{\prd{S_1}{S_2}} & \deq & \pair{\fst t}{\snd t}
+%\end{array}
+%\]
+
 \todoi{What is below, is copied from an earlier version and NOT updated.}
-
-\[
-\begin{array}{c}
-\infer{\ofdtp{\Gamma}{\sigmaset{x}{S_1}{S_1}}{\types}}
-      {\ofdtp{\Gamma}{S_1}{\types} &
-        \ofdtp{\Gamma, \tpvar{x}{\bullet}{{S_1}}}{S_2}{\types}}
-\qquad
-\infer{\oftpe{\Gamma}{\pair{t_1}{t_2}}{\bullet}{\sigmaset x {S_1} {S_2}}}
-      {\ofdtp{\Gamma}{S_1}{\types} &
-        \ofdtp{\Gamma, \tpvar{x}{\bullet}{{S_1}}}{S_2}{\types} &
-        \oftpe{\Gamma}{t_1}{\bullet}{S_1} &
-        \oftpe{\Gamma}{t_2}{\bullet}{\subst{S_2}{t_1}x}}
-\\ \\
-\infer{\oftpe{\Gamma}{\fst t}{\bullet}{{S_1}}}
-      {\oftpe{\Gamma}{t}{\bullet}{\sigmaset{x}{S_1}{S_2}}}
-\qquad
-\infer{\oftpe{\Gamma}{\snd t}{\bullet}{\subst{S_2}{\fst t}{x}}}
-      {\oftpe{\Gamma}{t}{\bullet}{\sigmaset{x}{S_1}{S_2}}}
-\end{array}
-\]
-
-\FIXME{bullets necessary on the elim rules?}
-
-\[
-\begin{array}{rcll}
-\fst{\pair{s}{t}} & \deq & s \\
-\snd{\pair{s}{t}} & \deq & t \\
-\tpvar{t}{\bullet}{\sigmaset{x}{S_1}{S_2}} & \deq & \pair{\fst t}{\snd t}
-\end{array}
-\]
-
-\subsubsection{Non-dependent product of sets}
-
-
-\[
-\begin{array}{c}
-\infer{\ofdtp{\Gamma}{\prd{S_1}{S_1}}{\types}}
-      {\ofdtp{\Gamma}{S_1}{\types} &
-        \ofdtp{\Gamma}{S_2}{\types}}
-\qquad
-\infer{\oftpe{\Gamma}{\pair{t_1}{t_2}}{\vcond}{\prd {S_1} {S_2}}}
-      { \oftpe{\Gamma}{t_1}{\vcond}{S_1} &
-        \oftpe{\Gamma}{t_2}{\vcond}{S_2}}
-\\ \\
-\infer{\oftpe{\Gamma}{\fst t}{\vcond}{{S_1}}}
-      {\oftpe{\Gamma}{t}{\vcond}{\prd{S_1}{S_2}}}
-\qquad
-\infer{\oftpe{\Gamma}{\snd t}{\vcond}{{S_2}}}
-      {\oftpe{\Gamma}{t}{\vcond}{\prd{S_1}{S_2}}}
-\end{array}
-\]
-
-\[
-\begin{array}{rcll}
-\fst{\pair{s}{t}} & \deq & s \\
-\snd{\pair{s}{t}} & \deq & t \\
-\tptm{t}{\prd{S_1}{S_2}} & \deq & \pair{\fst t}{\snd t}
-\end{array}
-\]
-
 \subsection{Bool}
 
 \[
