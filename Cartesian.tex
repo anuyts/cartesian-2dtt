@@ -523,20 +523,17 @@ The semantics of the presheaf $\Pi$ explicitly depend on the context, which make
 %\]
 
 \subsubsection{$\Pi$ of a category and a set (Limit)}
-We probably need a co- and a contravariant version here too.
-\todoi{What is below, is copied from an earlier version and NOT updated.}
-
 \[
 \begin{array}{c}
-\infer{\ofdtp{\Gamma}{\picat{(x,y)}{\C}{S}}{\types}}
+\infer{\ofdtp{\Gamma}{\picat{x}{\C}{S}}{\types}}
       {\wfdtp{\C} &
-        \ofdtp{\Gamma,\catvar{x}{\con}{\C},\catvar{y}{\co}{\C}}{S}{\types}}
+        \ofdtp{\Gamma,\catvar{x}{\co}{\C}}{S}{\types}}
 \qquad
-\infer{\oftpe{\Gamma}{\lam{z}{\C}{t}}{\vcond}{\picat {(x,y)} \C S}}
-      {\oftpe{\Gamma,\catvar{z}{\co}{\C}}{t}{\vcond}{\tsubst{S}{z^*/x,z/y}}}
+\infer{\oftp{\Gamma}{\lam{z}{\C}{t}}{\picat {x} \C S}}
+      {\oftp{\Gamma,\catvar{z}{\co}{\C}}{t}{\tsubst{S}{z/x}}}
 \qquad
-\infer{\oftpe{\Gamma}{\app t {c}}{\vcond}{\tsubst S {c^*/x,c/y}}}
-      {\oftpe{\Gamma}{t}{\vcond}{\picat{(x,y)}{\C}{S}} &
+\infer{\oftp{\Gamma}{\app f {c}}{\tsubst S {c/x}}}
+      {\oftp{\Gamma}{f}{\picat{x}{\C}{S}} &
         \ofdtp{\Gamma}{c}{\C}}
 \end{array}
 \]
@@ -544,14 +541,14 @@ We probably need a co- and a contravariant version here too.
 \[
 \begin{array}{rcll}
 \app {(\lam{z}{\C}{t})}{c} & \equiv & \subst{t}{c}{z} \\
-\tptm{M}{\picat{(x,y)}{\C}{S}} & \equiv & {(\lam{z}{\C}{M}{z})} &
+\tptm{f}{\picat{(x,y)}{\C}{S}} & \equiv & {(\lam{z}{\C}{f}{z})} &
 \end{array} \\
 \]
+The contravariant version should be admissible using opposites.
 
 \subsection{$\Sigma$-like things}
 
 \subsubsection{Product Categories}
-
 Directed types have simple functions and products (exponentials and
 products in \Cat).
 
@@ -577,32 +574,50 @@ products in \Cat).
 \[
 \begin{array}{rcll}
 \fst{\pair{c_1}{c_2}} & \deq & c_1 \\
-\snd{\pair{c_1}{c_2}} & \deq & c_1 \\
+\snd{\pair{c_1}{c_2}} & \deq & c_2 \\
 \tptm{c}{\prd{\C_1}{\C_2}} & \deq & \pair{\fst c}{\snd c}
 \end{array}
 \]
 
-\subsubsection{Category of elements of a bifunctor ($\hat{\Sigma}$)}
-
-Directed types also have dependent types where the dependent part is a
-family of sets or types. The product is the end type, the sum is the
-category whose sections are ends.
-
+\subsubsection{Category of elements}
 \[
 \begin{array}{c}
-\infer{\wfdtp{\sigmacat{\vcond}{x}{\C}{S}}}
+\infer{\wfdtp{\sigmacat{x}{\C}{S}}}
       {\wfdtp{\C} &
-        \wftp{\dupctx{\catvar{x}{\co}{\C}}{\vcond}}{S}}
+        \wftp{\catvar{x}{\co}{\C}}{S}}
 \qquad
-\infer{\ofdtp{\Gamma}{\pair{c}{t}}{\sigmacat{\vcond} x \C S}}
+\infer{\ofdtp{\Gamma}{\pair{c}{t}}{\sigmacat x \C S}}
       {\ofdtp{\Gamma}{c}{\C} &
-       \oftpe{\Gamma}{t}{\vcond}{\tsubst{S}{\substdup{(c^\vcond/x)}{\vcond}{c/x}}}}
+       \oftp{\Gamma}{t}{\tsubst{S}{c/x}}}
 \\ \\
 \infer{\ofdtp{\Gamma}{\fst c}{\C}}
-      {\ofdtp{\Gamma}{c}{\sigmacat{\vcond}{x}{\C}{S}}}
+      {\ofdtp{\Gamma}{c}{\sigmacat{x}{\C}{S}}}
+\qquad
+\infer{\oftp{\Gamma}{\snd c}{\tsubst{S}{c/x}}}
+      {\ofdtp{\Gamma}{c}{\sigmacat{x}{\C}{S}}}
+\end{array}
+\]
+The contravariant version should be admissible using opposites.
+
+\subsubsection{Category of elements of a twisted-arrow-functor ($\hat{\Sigma}$)}
+A section of the covariant or contravariant Grothendieck construction (category of elements) is an element of the limit. For bifunctors $T: \op\C \times \C \to \types$, we can define a category of elements whose sections are ends. All of these have a common generalization: from a functor $S : \Twisted{\C} \to \types$ on the twisted arrow category of $\C$, we can make a category $\widetilde\Sigma_\C S$ with a projection to $\C$, whose sections are, curiously, in correspondence with elements of the limit of $S$, even though they are functors on $\C$, unlike $S$ itself.
+
+\todoi{Projection and $\beta$-rules have not been updated. Here, we need to know how we handle real identity morphisms, on terms rather than on boxed variables.}
+\[
+\begin{array}{c}
+\infer{\wfdtp{\sigmatwcat{x}{\C}{S}}}
+      {\wfdtp{\C} &
+        \wftp{\twcatvar{x}{\co}{\C}}{S}}
+\qquad
+\infer{\ofdtp{\cdot}{\pair{c}{t}}{\sigmatwcat x \C S}}
+      {\ofdtp{\cdot}{c}{\C} &
+       \oftp{\cdot}{t}{S[\substtw{c}{c}{\idm c}{x}]}}
+\\ \\
+\infer{\ofdtp{\Gamma}{\fst c}{\C}}
+      {\ofdtp{\Gamma}{c}{\sigmacatstar{\vcond}{x}{\C}{S}}}
 \qquad
 \infer{\oftpe{\Gamma}{\snd c}{\vcond}{\tsubst{S}{\substdup{(\fst c^\vcond / x)}{\vcond}{\fst c/x}}}}
-      {\ofdtp{\Gamma}{c}{\sigmacat{\vcond}{x}{\C}{T}}}
+      {\ofdtp{\Gamma}{c}{\sigmacatstar{\vcond}{x}{\C}{T}}}
 \end{array}
 \]
 
@@ -615,6 +630,7 @@ category whose sections are ends.
 \]
 
 \subsection{$\Sigma$ of sets}
+\todoi{What is below, is copied from an earlier version and NOT updated.}
 
 \[
 \begin{array}{c}
