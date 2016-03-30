@@ -237,12 +237,12 @@ We don't want to distinguish between sets and types. Dagger sets are not justifi
 \end{array}
 \]
 
-The introduction rule is trivial/non-existent. Or do we need something like this:
+The introduction rule is trivial/non-existent:
 \[
 	\infer{
-		\oftp{\cdot}{\idm c}{\Hom{\C}{c}{c}}
+		\oftp{\Gamma, \twcatvar{x}{\coc}{\C}}{\idm x}{\Hom{\C}{x^*}{x}}
 	}{
-		\oftp{\cdot}{c}{\C}
+		\wfctx{\Gamma} & \wfdtp{\C}
 	}
 \]
 
@@ -285,9 +285,19 @@ Source-based elimination, too, is just substitution (although here I'm not 100\%
 	\end{array} }
 \end{equation}
 \FIXME{contravariant derivable?}
-Or do we need something like this:
+
+\subsubsection{Alternatives}
+\paragraph{Introduction and elimination in the empty context.}
+The following rules seem very sensible:
+\[
+	\infer{
+		\oftp{\cdot}{\idm c}{\Hom{\C}{c}{c}}
+	}{
+		\oftp{\cdot}{c}{\C}
+	}
+\]
 \begin{equation}
-	\infer[\admiss]{
+	\infer{
 		\oftp{\cdot}{\ldots}{S[c/x, \vfi/\xi]}
 	}{ \begin{array}{l}
 		\wfdtp{\C} \\
@@ -297,6 +307,51 @@ Or do we need something like this:
 		\oftp{\cdot}{t}{S[c'/x, \idm{c'}/\xi]}
 	\end{array} }
 \end{equation}
+
+\paragraph{Introduction and elimination in contexts that are somehow symmetric.}
+If we unpack the old introduction rule, we obtain nonsense (indicating that perhaps the old rule was nonsensical to begin with):
+\[
+	\infer{
+		\oftp{\Gamma}{\idm c}{\Hom{\C}{c[\rho]}{c}}
+	}{
+		\oftp{\Gamma}{c}{\C} &
+		\rho : \Gamma \cong \Gamma^\con
+	}
+\]
+To see that this is nonsense, consider $\oftp{\catvar{x'}{\con}{\C}, \catvar x \co \C}{d}{\D}$. This would give us
+\[
+	\oftp{\catvar{x'}{\con}{\C}, \catvar x \co \C}{\idm d}{\Hom{\D}{d[x/x', x'/x]}{d}}
+\]
+but there is not in general a morphism from $d(x, x')$ to $d(x', x)$. There is one if we have a morphism from $x'$ to $x$, so we could have something like:
+\[
+	\infer{
+		\oftp{[\Gamma]}{\idm c}{\Hom{\C}{c[\Gamma/\Gamma', \Gamma^*/\Gamma]}{c[\Gamma^*/\Gamma']}}
+	}{
+		\oftp{\Gamma', \Gamma}{c}{\C} &
+		\rho : \Gamma' \cong \Gamma^\con
+	}
+\]
+We cannot have just $[\Gamma]$ up above, because then the source of the morphism would not be defined.
+
+\paragraph{Covariant Hom (Presheaf Hom).}
+We could also consider a covariant (presheaf) Hom:
+\[
+	\infer{
+		\ofdtp{\Gamma}{\Hombind{\C}{\coc}{c_0}{c_1}}{\types}
+	}{
+		\wfdtp{\C} &
+		\oftp{\Gamma}{c_0}{\C} & 
+		\oftp{\Gamma}{c_1}{\C} 
+	}
+\]
+This one doesn't interact well with boxed variables, but it admits a simple introduction rule:
+\[
+	\infer{
+		\oftp{\Gamma}{\idm c}{\Hombind{\C}{\coc}{c}{c}}
+	}{
+		\oftp{\Gamma}{c}{\C}
+	}
+\]
 
 \subsection{$\Pi$-like Things}
 
