@@ -9,6 +9,9 @@
 \usepackage{proof}
 \usepackage[square]{natbib}
 
+\usepackage[backgroundcolor=white,bordercolor=red]{todonotes}
+\usepackage{xypic}
+
 \usepackage{ucs}
 \usepackage[utf8x]{inputenc}
 \usepackage[T1]{fontenc}
@@ -234,7 +237,21 @@ Then we get
 	&\simeq \forall(y, \vfi : x \to y).A(y) \,\text{naturally} \\
 	&\simeq A(x),
 \end{align*}
-twice using the Yoneda lemma. Including these in the theory seems as acceptible as including presheaf $\Pi$s.
+twice using the Yoneda lemma. Including these in the theory seems as acceptable as including presheaf $\Pi$s.
+
+You could even reduce functors $T : \Twisted\C \to \types$ to functors $T^\ddag : \C \to \types$, by setting
+\begin{equation}
+	T^\ddag(x) = \forall(y, \vfi : x \to y).T(\idm y) \,\text{naturally},
+\end{equation}
+where naturally means that if $t \in T^\ddag(x)$ and $x \xrightarrow{\vfi} y \xrightarrow{\psi} z$, then
+\begin{equation}
+	\xymatrix{
+		t(y, \vfi) \in \ar@{|->}[rd] & T(\idm y) \ar[rd] \\
+		& = & T(\psi) \\
+		t(z, \psi \circ \vfi) \in \ar@{|->}[ru] & T(\idm z) \ar[ru]
+	}
+\end{equation}
+Note that by the Yoneda lemma, $T^\ddag$ specializes to the identity operation for covariant $T$. For contravariant $T$, it specializes to $T^\dagger$. It is probably also precisely what is needed to define presheaf $\Pi$s if we have ordinary $\Pi$s.
 
 \subsection{Hom Types}
 \[
