@@ -317,6 +317,27 @@ Source-based elimination, too, is just substitution (although here I'm not 100\%
 \end{equation}
 \FIXME{contravariant derivable?}
 
+\subsubsection{Try to prove hom composition}
+There are several ways to even state it:
+
+Corresponding to ordinary $\Pi$:
+\[
+	\infer{
+		\oftp{\twcatvar x \co \C, \twcatvar y \co \C, \twcatvar z \co \C, \tpvar \vfi \conc{\Hom{\C}{x}{y^*}}, \tpvar \psi \conc{\Hom{\C}{y}{z^*}}}{}{\Hom{\C}{x^*}{z}}
+	}{
+		r
+	}
+\]
+
+Corresponding to presheaf $\Pi$:
+\[
+	\infer{
+		\oftp{\catvar x \con \C, \twcatvar y \co \C, \catvar z \co \C, \tpvar \vfi \coc{\Hom{\C}{x}{y}}, \tpvar \psi \coc{\Hom{\C}{y^*}{z}}}{}{\Hom{\C}{x}{z}}
+	}{
+		r
+	}
+\]
+
 \subsubsection{Alternatives}
 \paragraph{Introduction and elimination in the empty context.}
 The following rules seem very sensible:
